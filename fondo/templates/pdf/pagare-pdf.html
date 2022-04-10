@@ -1,0 +1,88 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        p {
+            font-size: 14px;
+        }
+    </style>
+    <h2>PAGARÉ</h2>
+
+    <br>
+
+    <p>PAGARÉ A LA ORDEN N°: {{ detalle.id }}</p>
+    <p>LUGAR Y FECHA DE EMISIÓN: Medellín, {% now 'D' %} de {% now 'M' %} de {% now 'Y' %}</p>
+    <p>VENCIMIENTO FINAL: </p>
+    <br><br>
+
+    <p>
+        YO, <strong>{{ profile.usuario.first_name|upper }} {{ profile.usuario.last_name|upper }}</strong> identificado con la cédula de ciudadanía
+        número <strong>{{ profile.cedula|intcomma }}</strong> expedida en ,________________respectivamente declaro: PRIMERO:
+        Me obligo a pagar la orden de __________, persona jurídica constituida como __________, con domicilio principal en Medellín, o a quien represente sus derechos
+        en sus oficinas o a su orden, el día <strong>{{ detalle.fecha_desembolso|date:'d'}}</strong> de <strong>{{ detalle.fecha_desembolso|date:'M'}}</strong> del año <strong>{{ detalle.fecha_desembolso|date:'Y'}}</strong>,
+        la suma de <strong>{{ num_letra|upper }}</strong> (<strong>${{ detalle.valor_aprobado|intcomma }}</strong>) moneda corriente. SEGUNDO: -INTERESES
+        DE MORA: En caso de mora en el pago del importe total o de cualquiera de las cuotas
+        previamente establecidas y, sin perjuicio de los derechos y acciones legales que
+        corresponderían a <strong>10%</strong> derivadas de dicho incumplimiento, pagaré intereses
+        moratorios equivalentes al interés máximo legal permitido, vigentes a la fecha en que se
+        produzca el retardo o la mora. TERCERO: -GASTOS: Todos los gastos en impuestos que
+        cause este título valor están a cargo del otorgante, lo mismo que los honorarios del abogado
+        y las costas del cobro si diere lugar a él. CUARTO: - EXIGIBILIDAD ANTICIPADA DE LA
+        DEUDA: mediante el otorgamiento de este pagaré, el otorgante autoriza a <strong>FEMEL</strong>,
+        para cargar a cualquier cuenta que éste tenga a su nombre al momento de proceder con el
+        cobro o para debitar de cualquier suma que el otorgante de este título tenga a su favor con la
+        empresa por cualquier concepto, el valor de este pagaré y exigir anticipadamente el pago
+        inmediato del mismo, más los intereses corrientes pactados y de mora, costas y demás
+        accesorios, en cualquiera de los siguientes casos: 1). Desvinculación o Cesación del
+        Contrato de trabajo del otorgante. En este evento, <strong>FEMEL</strong>, como acreedor podrá,
+        hacer uso de esta cláusula aceleratoria y cobrar la totalidad de la deuda o la parte que no
+        haya sido pagada si el otorgante del título ha realizado abonos a capital e intereses o se
+        estableció pago por cuotas y el otorgante ha cumplido con las mismas En este caso,
+        <strong>FEMEL</strong> también estará facultado para modificar las condiciones de pago, intereses
+        y reducir el plazo a uno no mayor a la mitad del inicialmente pactado y la tasa de interés
+        durante este plazo no será inferior a la tasa del interés bancario corriente vigente a esa
+        fecha. 2). Mora o incumplimiento en el pago de capital e intereses de esta o cualquier otra
+        obligación que directa, indirecta, conjunta o separadamente tenga para con <strong>2.4%</strong>
+        3). Si alguno de los bienes hipotecados y/o otorgados en prenda a <strong>FEMEL</strong>, para el
+        respaldo de la obligación contraída, fuere directa o indirectamente perseguidos judicialmente
+        por un tercero, sufriere(n) cualquier afectación con embargos, demandas, censos, anticresis,
+        condiciones resolutorias, limitaciones de dominio, patrimonio de familia inembargable,
+        usufructo o habitación, servidumbres, etc., o desmejora o deprecio tales que llegare(n) a no
+        prestar suficiente garantía a juicio de <strong>FEMEL</strong>.  4). Si el otorgante fuere embargado
+        judicialmente. 5). Si alguno de los documentos presentados por el otorgante para la
+        evaluación y análisis por parte de <strong>FEMEL</strong> resultare falso o inexacto. 6). Si el
+        otorgante de este título no tomare los seguros a que está obligado, de ser el caso, no pagaré
+        o no reembolsaré las respectivas primas, o no se cumpliere cualquiera de las obligaciones a
+        su cargo. 7). Si se enajenara total o parcialmente el inmueble y/o mueble pignorado a
+        <strong>FEMEL</strong>, sin autorización previa de éste, se hará exigible el saldo de la respectiva
+        obligación y se ajustará la tasa de interés por el plazo faltante, a la tasa de interés bancario
+        corriente, que rija con retroactividad a la fecha de enajenación. 8).Mala o difícil situación
+        económica del obligado, calificada por el tenedor legítimo de este título y que pueda poner en
+        riesgo el pago de la obligación. 9) En caso de muerte del otorgante, <strong>FEMEL</strong> podrá
+        exigir la totalidad del crédito a cualquiera de los herederos, sin necesidad de demandarlos a
+        todos. 10). Los demás casos establecidos en la ley. QUINTO: -RENUNCIA AL
+        REQUERIMIENTO O RECONVENCION: EL otorgante de este pagaré renuncia
+        expresamente al derecho de reconvención establecido en el artículo 1608 del Código Civil.
+        SEXTO:-PRÓRROGA: SI <strong>FEMEL</strong> diere al otorgante de este pagaré alguna
+        prórroga o cambio en los términos y condiciones para el pago de la deuda, esto no implicará
+        novación de la obligación principal. -. SÉPTIMO- REGISTRO DE ABONOS PARCIALES:
+        Autorizo a <strong>FEMEL</strong> o a cualquier tenedor legítimo de este título, para que registre
+        extracartularmente, por el sistema que determine <strong>FEMEL</strong>, los abonos parciales que
+        haga de la obligación, incorporada en este título, conforme lo establecido en el artículo 624
+        del código de Comercio. OCTAVO: DERECHOS FISCALES: los derechos fiscales que
+        cause este documento estarán totalmente a cargo del deudor.
+        DEUDOR
+    </p>
+    <br><br>
+    <p>Firma: _________________________________</p>
+    <p>Nombre: {{ profile.usuario.first_name }} {{ profile.usuario.last_name }}</p>
+    <p>CC: {{ profile.cedula|intcomma }}</p>
+</body>
+</html>

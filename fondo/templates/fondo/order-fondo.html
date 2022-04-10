@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %} {% block titulo %}FEMEL Gestión de Fondo de Empleados{% endblock %}
+{% block contenido %} 
+
+  {% load static %}
+  {% load humanize %}
+
+  {% if request.user.is_authenticated %}
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <section class="container" id="dashboard">
+    <div class="row mt-5">
+      <div class="col-12 table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+          <thead class="bg-success text-light text-center">
+            <tr>
+              <th>Usuario</th>
+              <th>Descargables</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            {% for sol in solicitudcredito_list %}
+            <tr>
+              <th>
+                {{ sol.usuario.first_name }} {{ sol.usuario.last_name }}
+              </th>
+              <th>
+                <a href="/fondo/pdf-pagare/{{ sol.id }}" class="btn btn-primary">
+                    Pagare
+                </a>
+                <a href="/fondo/pdf-autorizacion-descuento/{{ sol.id }}" class="btn btn-danger">
+                    Autorización de descuento
+                </a>
+              </th>
+              
+            </tr>
+            {% endfor %}
+          </tbody>   
+        </table>
+      </div>
+    </div>
+  </section>
+  
+  {% else %}
+    
+  {% endif %}
+{% endblock %}

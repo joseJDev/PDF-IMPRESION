@@ -1,0 +1,186 @@
+{% extends 'core/base.html' %} {% block titulo %}FEMEL Gestión de Fondo de Empleados{% endblock %}
+{% block contenido %} 
+
+  {% load static %}
+  {% load humanize %}
+
+  {% if request.user.is_authenticated %}
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <section class="container" id="dashboard">
+    <div class="row">
+
+      <div class="col mt-2 mx-1 card text-light bg-secondary mb-3">
+        <div class="card-header">Tasas de Interés</div>
+        <div class="card-body">
+          <h5 class="card-title">En Femel tienes un 10% E.A.</h5>
+          <p class="card-text">Este 10% se divide en el número de cuotas que vas a pagar</p>
+        </div>
+      </div>
+
+      <div class="col mt-2 mx-1 card text-primary bg-light mb-3">
+        <div class="card-header text-success">Contácto</div>
+        <div class="card-body">
+          <h5 class="card-title">Lineas de atención</h5>
+          <p class="card-text"><strong>Email:</strong>&nbsp;femel@mail.com <br><strong>Teléfono:</strong>&nbsp;604 5673452</p>
+        </div>
+      </div>
+
+      <div class="col-12 table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+          <thead class="bg-success text-light text-center">
+            <tr>
+              <th>Solicitante</th>
+              <th>Linea de Crédito</th>
+              <th>Monto Solicitado</th>
+              <th>Ingresos</th>
+              <th>Egresos</th>
+              <th>Estado de Solicitud</th>
+              <th colspan="2">Opciones</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            {% for item in data %}
+            <tr>
+              <th>
+                {{ item.0 }}
+              </th>
+              <th>
+                {{ item.9 }}
+              </th>
+              <th>
+                ${{ item.6 |floatformat:2|intcomma  }}
+              </th>
+              <td>
+                ${{ item.4|floatformat:2|intcomma  }}
+              </td>
+              <td>
+                ${{ item.5|floatformat:2|intcomma  }}
+              </td>
+              <td>
+                {{ item.11 }}
+              </td>
+              <td class="text-info d-felx">
+                <a href="/admin/empleados/datosempleado/" class="nav-link">
+                  info&nbsp;<i class="fas fa-info-circle"></i>
+                </a>
+              </td>
+              <td class="d-flex">
+                <a href="/admin/fondo/detallesolicitudes/add/" class="nav-link">
+                  Ver&nbsp;<i class="fas fa-angle-double-right"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>   
+        </table>
+      </div>
+    </div>
+  </section>
+  <script>
+    // ToolTips de bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    $(document).ready(function() {
+          let refreshId =  setInterval( function(){
+                                          $('dashboard').load('index.php');//actualizas el div
+                                        }, 1000 );
+    });
+    
+    // Traer la información de inicio:
+    const url ="{% url 'inicio' %}"
+    fetch (url, {'credentials':'include'})
+          .then(response => response.json())
+          .then((response)=>{
+            console.log(response)
+          })
+
+  </script>
+
+  {% else %}
+  <main>
+    <div
+      class="
+        position-relative
+        overflow-hidden
+        p-3 p-md-5
+        m-md-3
+        text-center
+        bg-light
+        fondo
+      "
+    >
+      <div class="row">
+        <div class="col-md-7"></div>
+        <div class="col-md-5 p-lg-5 ml-5 my-5">
+          <h1 class="display-4 fw-normal">{{ titulo }}</h1>
+          <p class="lead fw-normal">{{ mensaje }}</p>
+          {% if request.user.is_authenticated %}
+            <a class="btn btn-lg btn-primary" href="{% url 'profile' %}">{{ boton }}</a>
+          {% else %}
+            <a class="btn btn-lg btn-primary" href="{% url 'login' %}">{{ boton }}</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="container py-5">
+    <div class="row">
+      <div class="col-12 col-md text-center">
+        <img
+          src="{% static 'media/img/ssg1H_logo.gif' %}"
+          alt=""
+          class="img-fluid"
+        />
+        <small class="d-block mb-3 text-muted">&copy; 2017–2021</small>
+      </div>
+      <div class="col-6 col-md">
+        <h5>Lineas de crédito</h5>
+        <a href="{% url 'linea' %}"><img class="img-fluid" src="{% static 'media/img/creditos.jpg' %}" width="70%" alt=""></a>
+      </div>
+
+      <div class="col-6 col-md">
+        <h5>About</h5>
+        <ul class="list-unstyled text-small">
+          <li><a class="link-secondary" href="{% url 'team' %}">Team</a></li>
+          <li><a class="link-secondary" href="#">Politicas</a></li>
+          <li><a class="link-secondary" href="#">Terminos y Condiciones</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md">
+        <h5>Resources</h5>
+        <ul class="list-unstyled text-small">
+          <li>
+            <a
+              class="link-secondary"
+              target="_blank"
+              href="https://github.com/EstefanyRamos94/Femel"
+              >Repositorio</a
+            >
+          </li>
+          <li>
+            <a
+              class="link-secondary"
+              target="_blank"
+              href="https://github.com/viewEder/SG-SST-1H/tree/eder/SG-SST-1H/0_Doc.Proyecto"
+              >Documentos</a
+            >
+          </li>
+          <li><a class="link-secondary" href="#">Government</a></li>
+          <li><a class="link-secondary" href="#">Gaming</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+  </script>
+  {% endif %}
+{% endblock %}

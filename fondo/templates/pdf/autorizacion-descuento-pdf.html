@@ -1,0 +1,53 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        p {
+            font-size: 14px;
+        }
+    </style>
+    <h2>AUTORIZACIÓN DE DESCUENTO</h2>
+    <br>
+    <p>CUENTA: Nomina</p>
+    <p>REF: </p>
+    <p>VALOR DEL DESEMBOLSO: <strong>${{ detalle.valor_aprobado|intcomma }}</strong></p>
+    <br><br>
+
+    <p>
+        Yo <strong>{{ profile.usuario.first_name|upper }} {{ profile.usuario.last_name|upper }}</strong> Identificado(a) con Cédula de Ciudadanía número <strong>{{ profile.cedula|intcomma }}</strong> expedida en _______________________ , en mi calidad de empleado autorizo de 
+        manera expresa a mí empleador <strong>FEMEL</strong> para que me sea descontado de mi salario, 
+        comisiones, bonificaciones, variable, prestaciones sociales, indemnizaciones, y cualquier devengo al 
+        que tenga derecho, el valor total de (<strong>{{ credit_letras|upper }}</strong> PESOS COLOMBIANOS ) 
+        en <strong>{{ cuota_letras|upper }}</strong> (<strong>{{ detalle.cuotas_pagare }}</strong>) cuota(s) quincenal(es), 
+        por valor de (<strong>{{ valor_cuota_letras|upper }}</strong> PESOS COLOMBIANOS )  
+        cada cuota.
+
+        Adicionalmente autorizo que, en caso de retiro, el valor de la liquidación definitiva sea abonado a la deuda.
+
+        Lo anterior, por el concepto de crédito en la modalidad de libranza, en los términos de la Ley 1527 de 2012, modificada por la Ley 1902 de 2018.
+    </p>
+    <br><br>
+    <p>
+        Dependencia: {{ empleado.dependencia }}
+    </p>
+    <p>
+        Cargo: {{ empleado.cargo }}
+    </p>
+    <p>
+        Para constancia de lo anterior se firma a los {% now 'd' %} días del mes de {% now "M" %} del año {% now 'Y' %}".
+    </p>
+    <br>
+    <p>
+        ____________________________________
+        <br>
+        Firma del colaborador
+        C.C</p>
+</body>
+</html>

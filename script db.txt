@@ -1,0 +1,138 @@
+# Ejecutar este script en el motor de la base de datos:
+
+drop trigger actsolicitud;
+
+DELIMITER $$
+CREATE TRIGGER actsolicitud
+AFTER INSERT ON femel.fondo_detallesolicitudes
+FOR EACH ROW
+BEGIN
+	if femel.fondo_detallesolicitudes.valor_aprobado <= 1000 then
+		UPDATE femel.fondo_solicitudcredito inner join fondo_detallesolicitudes
+		set fondo_solicitudcredito.estado_solicitud = 'Rechazada'
+		where fondo_detallesolicitudes.solicitud_id = fondo_solicitudcredito.id;
+	else 
+		UPDATE femel.fondo_solicitudcredito inner join fondo_detallesolicitudes
+		set fondo_solicitudcredito.estado_solicitud = 'Aceptada'
+		where fondo_detallesolicitudes.solicitud_id = fondo_solicitudcredito.id;
+	end if;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER actsolicitudupdate
+AFTER UPDATE ON femel.fondo_detallesolicitudes
+FOR EACH ROW
+BEGIN
+	if femel.fondo_detallesolicitudes.valor_aprobado <= 1000 then
+		UPDATE femel.fondo_solicitudcredito inner join fondo_detallesolicitudes
+		set fondo_solicitudcredito.estado_solicitud = 'Rechazada'
+		where fondo_detallesolicitudes.solicitud_id = fondo_solicitudcredito.id;
+	else 
+		UPDATE femel.fondo_solicitudcredito inner join fondo_detallesolicitudes
+		set fondo_solicitudcredito.estado_solicitud = 'Aceptada'
+		where fondo_detallesolicitudes.solicitud_id = fondo_solicitudcredito.id;
+	end if;
+END$$
+DELIMITER ;
+
+-- Query Test:
+SELECT * FROM femel.auth_user;
+SELECT * FROM femel.empleados_empleados;
+SELECT * FROM femel.empleados_datosempleado;
+SELECT * FROM femel.empleados_ingresosempleado;
+SELECT * FROM femel.fondo_lineacredito;
+SELECT * FROM femel.fondo_solicitudcredito;
+SELECT * FROM femel.fondo_detallesolicitudes;
+
+-- ingreso_bruto credito_id 
+
+select 
+	a.username, a.first_name, a.last_name,
+    e.cargo, e.contrato, e.fecha_ingreso,
+	ie.ingreso_bruto,  de.total_egresos,
+    s.monto_credito, s.plazo_credito, 
+    CAST(REPLACE(l.plazo_maximo,' meses','') AS SIGNED) AS plazo_maximo,
+    l.nombre_linea, l.taza_eanual, s.estado_solicitud,
+    (select 
+		ROUND(s.monto_credito * (1 + POW(((l.taza_eanual / 12)),12)))
+	) as Total_Pagar,
+    round(((select ROUND(s.monto_credito * (1 + POW(((l.taza_eanual / 12)),12)))) / CAST(REPLACE(l.plazo_maximo,' meses','') AS SIGNED))) as cuota_mensual,
+    a.is_active
+from auth_user a
+inner join empleados_empleados e 
+	on (e.usuario_id = a.id)
+inner join empleados_ingresosempleado ie
+	on (e.usuario_id = ie.empleado_id )
+inner join empleados_datosempleado de 
+	on (e.usuario_id = de.usuario_id)
+inner join fondo_solicitudcredito s
+	on (s.usuario_id = e.usuario_id)
+inner join fondo_lineacredito l
+	on (s.credito_id = l.id)
+where s.estado_solicitud != 'Aceptada';
+
+-- Functions
+
+CREATE DEFINER=`root`@`%` FUNCTION `cuotaMensual`(monto decimal, plazos int, tasa decimal) RETURNS decimal(4,2)
+BEGIN
+	DECLARE cuota decimal;
+    DECLARE tasa_mes decimal;
+    DECLARE interes_tasa decimal;
+    SET tasa_mes = 0.833;
+    SET interes_tasa = pow((1 + tasa_mes),12);
+    SET cuota = round(monto * interes_tasa);
+RETURN interes_tasa;
+END
+
+-- Ruta:
+/admin/fondo/detallesolicitudes/add/
+
+-- Vista:
+CREATE 
+    ALGORITHM = UNDEFINED 
+    SQL SECURITY DEFINER
+VIEW `Notificaciones_Solicitudes` AS
+    SELECT 
+        CONCAT(`a`.`username`,
+                ' ',
+                `a`.`first_name`,
+                ' ',
+                `a`.`last_name`) AS `solicitante`,
+        `e`.`cargo` AS `cargo`,
+        `e`.`contrato` AS `contrato`,
+        `e`.`fecha_ingreso` AS `fecha_ingreso`,
+        `ie`.`ingreso_bruto` AS `ingreso_bruto`,
+        `de`.`total_egresos` AS `total_egresos`,
+        `s`.`monto_credito` AS `monto_credito`,
+        `s`.`plazo_credito` AS `plazo_credito`,
+        CAST(REPLACE(`l`.`plazo_maximo`,
+                ' meses',
+                '')
+            AS SIGNED) AS `plazo_maximo`,
+        `l`.`nombre_linea` AS `nombre_linea`,
+        `l`.`taza_eanual` AS `taza_eanual`,
+        `s`.`estado_solicitud` AS `estado_solicitud`,
+        (SELECT 
+                ROUND((`s`.`monto_credito` * (1 + POW((`l`.`taza_eanual` / 12), 12))),
+                            0)
+            ) AS `Total_Pagar`,
+        ROUND(((SELECT 
+                        ROUND((`s`.`monto_credito` * (1 + POW((`l`.`taza_eanual` / 12), 12))),
+                                    0)
+                    ) / CAST(REPLACE(`l`.`plazo_maximo`,
+                        ' meses',
+                        '')
+                    AS SIGNED)),
+                0) AS `cuota_mensual`,
+        `a`.`is_active` AS `is_active`
+    FROM
+        (((((`auth_user` `a`
+        JOIN `empleados_empleados` `e` ON ((`e`.`usuario_id` = `a`.`id`)))
+        JOIN `empleados_ingresosempleado` `ie` ON ((`e`.`usuario_id` = `ie`.`empleado_id`)))
+        JOIN `empleados_datosempleado` `de` ON ((`e`.`usuario_id` = `de`.`usuario_id`)))
+        JOIN `fondo_solicitudcredito` `s` ON ((`s`.`usuario_id` = `e`.`usuario_id`)))
+        JOIN `fondo_lineacredito` `l` ON ((`s`.`credito_id` = `l`.`id`)))
+    WHERE
+        (`s`.`estado_solicitud` <> 'Aceptada')
+    ORDER BY `s`.`id` DESC

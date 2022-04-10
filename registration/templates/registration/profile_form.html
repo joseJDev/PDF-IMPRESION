@@ -1,0 +1,125 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Perfil de Usuario {% endblock %}
+
+{% block contenido %}
+    {% load static %}
+
+    <section class="container-fluid">
+        <div class="row">
+            <div class="col-3 text-center bg-dark">
+                <h4 class="mt-3 text-info">¿Por qué colocar esta información?</h4>
+                <img src="{% static 'media/img/gifPromo.gif' %}" class="img-fluid mt-5 mb-3" alt="">
+                <p class="text-light mb-3"><strong>
+                    Esta información corresponde a la presentación que tendremos dentro del aplicativo. Otros usuarios pueden ver esta información
+                    y tomar la decisión de contactarte.
+                </strong></p>
+                <p class="text-light"><small>
+                    {% if request.user.first_name %}
+                        {{user.first_name}}
+                    {% else %}
+                        {{user.username}}
+                    {% endif %}
+                </small></p>
+                <hr class="">
+                <div class="col">
+                    
+                </div>
+            </div>
+            
+            <div class="col-9 mt-3">
+                <div class="container">
+                    <h2 class="text-success text-center">{{user.first_name}}  {{user.last_name}}</h2>
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+        
+                        <div class="row text-left">
+                            <div class="col-8 justificado">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="text-primary mt-2" for=""><strong>Cédula</strong></label>
+                                        {{form.cedula}}
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="text-primary mt-2" for=""><strong>Profesión</strong></label>
+                                        {{form.profesion}}
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="text-primary mt-2" for=""><strong>Teléfono</strong></label>
+                                        {{form.telefono}}
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="text-primary mt-2" for=""><strong>Celular</strong></label>
+                                        {{form.celular}}
+                                    </div>
+                                    <div class="col-2">
+                                        <label class="text-primary mt-2" for=""><strong>Género</strong></label>
+                                        {{form.genero}}
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="text-primary mt-2" for=""><strong>Fecha de nacimiento</strong></label>
+                                        {{form.fecha_nacimiento}}
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="text-primary mt-2" for=""><strong>Lugar de nacimiento</strong></label>
+                                        {{form.lugar_nacimiento}}
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="text-primary mt-2" for=""><strong>Dirección</strong></label>
+                                        {{form.direccion}}
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="col-4 justificado">
+                                <div class="text-center">
+                                    <h4 class="text-info">
+                                        {{ user.username }} {{ empleados.id_empleado}} 
+                                    </h4>
+                                </div>
+        
+                                {% if request.user.profile.avatar %}
+                                    <div class="text-center">
+                                        <img src="{{ request.user.profile.avatar.url }}" alt="Imagen de Perfil " class="col-9 img-fluid">
+                                    </div>
+                                    <br>
+            
+                                    <p class="text-center" >
+                                        ¿Borrar Imagen?
+                                        <input type="checkbox" name="avatar-clear" id="avatar-clear">
+                                    </p>
+                                {% else %}
+                                    <img src="{% static 'media/img/djangopng.png' %}" alt="Imagen de Perfil " class="img-fluid">
+                                    {{form.avatar}}
+                                {% endif %}
+                                <!-- Accesos a cambio de contraseña y de correo Electrónico -->
+                                <hr>
+                                {% if user.email %}
+                                    <a type="button" class="btn btn-outline-dark col-12 mb-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Cambiar Correo Electrónico"> {{user.email}}</a>
+                                {% else %}
+                                    <a type="button" class="btn btn-outline-warning col-12 mb-1">Adicionar Datos</a>
+                                {% endif %}
+                                <a type="button" class="btn btn-outline-info col-12">Cambiar Contraseña</a>
+                            </div>
+                        </div>                   
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <button class="btn btn-danger me-md-2" type="reset">Cancelar</button>
+                            <button class="btn btn-primary" type="submit">Actualizar</button>
+
+                            {% if existe_sol %}
+                                <button class="btn btn-secondary" type="submit">Mis Solicitudes...</button>
+                            {% endif %}
+                            
+                        </div>
+                    
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+   
+
+{% endblock %}

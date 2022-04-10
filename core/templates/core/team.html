@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %} 
+{% block titulo %}Equipo de Desarrollo FEMEL{% endblock %}
+{% block contenido %} 
+    {% load static %}
+
+    <section class="container row">
+        <div class="wrapper">
+            <header class="mt-2 header">
+                <h1 class="text-center text-success" id="nombre"></h1>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Wikipedia_Women_Project.png" class="rounded mx-auto d-block img-fluid" alt="">
+                <em><p class="lead text-center" id="profesion">
+                    {{ autor }}
+                    {{ facultad }}
+                </p></em>
+                <div class="mt-3">
+                    
+                </div>
+            </header>
+            <section class="text-justify section">
+                 <div id="banner" class="col-md-12">
+                     <!-- Banner SENA -->
+                 </div>
+                 <div class="col-md-12 mt-1">
+                     <h3 class="bg-dark text-light">&nbsp;<i class="fas fa-address-card"></i>&nbsp;Pérfil:</h3>
+                     <p class="blockquote" id="perfil"></p>
+     
+                     <h3 class="bg-dark text-light">&nbsp;<i class="fas fa-book"></i>&nbsp;Resumen:</h3>
+                          
+                     <h3 class="bg-dark text-light">&nbsp;<i class="fab fa-git-alt"></i>&nbsp;Repositorio y fuentes:</h3>
+                     <a href="{{ repositorio }}" class="nav-link"><i class="fab fa-github-square"></i>&nbsp;{{ repositorio }}</a>
+                 </div>
+     
+            </section>
+            <footer class="footer">
+                <h4 class="text-left text-success">&nbsp;<i class="fas fa-envelope"></i>&nbsp;Contacto:</h4>
+                <p class="lead text-right">
+                    <span class="align-baseline" id="correo"></span>&#09;<i class="fas fa-at align-middle text-primary"></i>&nbsp;<br>
+                    <span class="align-baseline" id="telefono"></span>&#09;<i class="fas fa-phone-alt align-middle text-primary"></i>
+                </p>
+                <p class="text-center">
+                    <em><small>
+                        {{ ubicacion }} - {{ periodo }}
+                    </small></em>
+            </footer>
+         </div>
+    </section>
+{% endblock %}
